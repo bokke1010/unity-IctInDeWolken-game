@@ -91,6 +91,9 @@ public class ConnectorScript : MonoBehaviour {
 			while (nxtBlock.GetComponent<ConnectorScript> ().block != null) {
 				nxtBlock = nxtBlock.GetComponent<ConnectorScript> ().block;
 				vertexes += 1;
+				if (vertexes > 10) {
+					break;
+				}
 			}
 			GameObject myLine = new GameObject();
 			myLine.transform.position = gameObject.transform.position;
