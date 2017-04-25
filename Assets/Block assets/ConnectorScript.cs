@@ -10,6 +10,7 @@ public class ConnectorScript : MonoBehaviour {
 	GameObject source;
 	public string blockFunction = "none";
 	GameObject Ball;
+	ConnectorScript blockScript;
 	// Use this for initialization
 	void Start () {
 		Ball = GameObject.FindWithTag("ball");
@@ -17,7 +18,6 @@ public class ConnectorScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		attach ();
 		findSource ();
 		Connect (new Color (0, 1, 0));
 	}
@@ -30,8 +30,8 @@ public class ConnectorScript : MonoBehaviour {
 
 	void activateNext(){
 		if (attached) {
-			Debug.Log (Time.fixedTime,block);
-			block.GetComponent<ConnectorScript> ().runCode ();
+			// Debug.Log (Time.fixedTime,block);
+			blockScript.runCode ();
 		}
 	}
 
@@ -43,6 +43,7 @@ public class ConnectorScript : MonoBehaviour {
 			if (p != null) {
 				attached = true;
 				block = p.gameObject;
+				blockScript = p;
 				return true;
 			}
 		}
@@ -65,8 +66,9 @@ public class ConnectorScript : MonoBehaviour {
 		}
 	}
 
-	void moveBall (Vector3 movement, float dist){
-		Ball.GetComponent<Rigidbody> ().velocity += movement * dist;
+	void moveBall (Vector3 movement, float force){
+		Rigidbody thisRigidBody = Ball.GetComponent<Rigidbody> ();
+		thisRigidBody.velocity = movement * force + thisRigidBody.velocity;
 	}
 
 	void findSource(){
@@ -88,8 +90,10 @@ public class ConnectorScript : MonoBehaviour {
 		int vertexes = 1;
 		if (source == null) {
 			GameObject nxtBlock = gameObject;
-			while (nxtBlock.GetComponent<ConnectorScript> ().block != null) {
-				nxtBlock = nxtBlock.GetComponent<ConnectorScript> ().block;
+			ConnectorScript nxtBlockScript = nxtBlock.GetComponent<ConnectorScript> ();
+			while (nxtBlockScript.block != null) {
+				nxtBlock = nxtBlockScript.block;
+				nxtBlockScript = nxtBlock.GetComponent<ConnectorScript> ();
 				vertexes += 1;
 				if (vertexes > 10) {
 					break;
@@ -105,11 +109,13 @@ public class ConnectorScript : MonoBehaviour {
 			lr.SetVertexCount(vertexes+1);
 			lr.SetPosition (0, gameObject.transform.position);
 			nxtBlock = gameObject;
+			nxtBlockScript = nxtBlock.GetComponent<ConnectorScript> ();
 			for (int n = 1; n< vertexes; n++) {
-				nxtBlock = nxtBlock.GetComponent<ConnectorScript> ().block;
+				nxtBlock = nxtBlockScript.block;
+				nxtBlockScript = nxtBlock.GetComponent<ConnectorScript> ();
 				lr.SetPosition(n, nxtBlock.transform.position);
 			}
-			lr.SetPosition(vertexes, nxtBlock.transform.forward * nxtBlock.GetComponent<ConnectorScript>().connectRange + nxtBlock.transform.position );
+			lr.SetPosition(vertexes, nxtBlock.transform.forward * nxtBlockScript.connectRange + nxtBlock.transform.position );
 			GameObject.Destroy(myLine, duration);
 		}
 	}
