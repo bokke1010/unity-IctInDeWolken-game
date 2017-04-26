@@ -4,10 +4,11 @@ using System.Collections.Generic;
 
 public class ConnectorScript : MonoBehaviour {
 
-	GameObject block;
+	public GameObject block;
+	public GameObject source;
 	bool attached;
+
 	public float connectRange=4;
-	GameObject source;
 	public string blockFunction = "none";
 	GameObject Ball;
 	ConnectorScript blockScript;
@@ -18,24 +19,26 @@ public class ConnectorScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		findSource ();
+		// findSource (); // now moved to the controller script for optimization
 		Connect (new Color (0, 1, 0));
+		if (blockFunction == "clock" && Time.fixedTime % 2 == 0 && source == null){
+			activateNext(0);
+		}
 	}
 
 	void FixedUpdate() {
-		if (blockFunction == "clock" && Time.fixedTime % 2 == 0 && source == null){
-			activateNext();
-		}
+		
 	}
 
-	void activateNext(){
-		if (attached) {
+	void activateNext( int cycle){
+		if (attached && cycle < 10) {
 			// Debug.Log (Time.fixedTime,block);
-			blockScript.runCode ();
+			cycle ++;
+			blockScript.runCode (cycle);
 		}
 	}
 
-	bool attach(){
+	public bool attach(){
 		Ray ray = new Ray (gameObject.transform.position, gameObject.transform.forward);
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, connectRange)) {
@@ -52,27 +55,25 @@ public class ConnectorScript : MonoBehaviour {
 		return false;
 	}
 
-	void runCode(){
+	void runCode(int cycle){
 
 		switch (blockFunction) {
 			case "code_block":
 				Debug.Log ("code activated");
-				activateNext ();
-				moveBall (gameObject.transform.forward, 5);
+				activateNext (cycle);
+				moveBall (gameObject.transform.forward * 75);
 				break;
 			case "connector_block":
-				activateNext ();
+				activateNext (cycle);
 				break;
 		}
 	}
 
-	void moveBall (Vector3 movement, float force){
-		Rigidbody thisRigidBody = Ball.GetComponent<Rigidbody> ();
-		thisRigidBody.velocity = movement * force + thisRigidBody.velocity;
+	void moveBall (Vector3 movement){
+		Ball.GetComponent<Rigidbody> ().AddForce (movement);
 	}
 
 	void findSource(){
-		GameObject target = block;
 		ConnectorScript[] objects = FindObjectsOfType<ConnectorScript> ();
 		for (int i = 0; i < objects.Length; i++) {
 			objects [i].attach ();
@@ -80,7 +81,7 @@ public class ConnectorScript : MonoBehaviour {
 		}
 		for( int i = 0; i<objects.Length;i++){
 			if (objects [i].block != null) {
-				objects [i].block.GetComponent<ConnectorScript> ().source = gameObject;
+				objects [i].block.GetComponent<ConnectorScript> ().source = objects[i].gameObject;
 			}
 		}
 	}

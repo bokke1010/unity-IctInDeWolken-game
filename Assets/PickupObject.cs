@@ -45,13 +45,13 @@ public class PickupObject : MonoBehaviour {
 
 	void pickup(){
 		// create new block in hand
-		if (Input.GetKeyDown (KeyCode.R)) {
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
 			spawnObject (toSpawnWithR);
 		}
-		if (Input.GetKeyDown (KeyCode.F)) {
+		if (Input.GetKeyDown (KeyCode.Alpha2)) {
 			spawnObject (toSpawnWithF);
 		}
-		if (Input.GetKeyDown (KeyCode.V)) {
+		if (Input.GetKeyDown (KeyCode.Alpha3)) {
 			spawnObject (toSpawnWithV);
 		}
 		// pickup existing block
