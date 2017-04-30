@@ -9,13 +9,14 @@ public class PickupObject : MonoBehaviour {
 	public float smooth;
 	public float rSmooth;
 	public float scrollSensitivity;
-	public GameObject toSpawnWithR;
-	public GameObject toSpawnWithF;
-	public GameObject toSpawnWithV;
+	public GameObject toSpawnWith1;
+	public GameObject toSpawnWith2;
+	public GameObject toSpawnWith3;
+	public GameObject toSpawnWith4;
 	float yOffset;
 	// Use this for initialization
 	void Start () {
-		mainCamera = GameObject.FindWithTag("MainCamera");
+		mainCamera = GameObject.FindWithTag("Head");
 	}
 	
 	// Update is called once per frame
@@ -27,9 +28,9 @@ public class PickupObject : MonoBehaviour {
 			pickup();
 		}
 	}
-
+	//TODO: line 33 works for now, but this dual-rotation bug must be fixed (parent y rotation + local y rotation) since local y rot should always be 0
 	void carry(GameObject o){
-		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + mainCamera.transform.forward * distance, Time.deltaTime * smooth);
+		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + transform.worldToLocalMatrix.MultiplyVector(mainCamera.transform.forward) * distance , Time.deltaTime * smooth);
 		o.transform.rotation = Quaternion.Lerp(o.transform.rotation, Quaternion.Euler( new Vector3(0,gameObject.transform.eulerAngles.y + yOffset,0)), Time.deltaTime * rSmooth);
 		yOffset += scrollSensitivity * Input.GetAxis("Mouse ScrollWheel");
 		//Debug.Log(gameObject.transform.eulerAngles.y);
@@ -46,13 +47,16 @@ public class PickupObject : MonoBehaviour {
 	void pickup(){
 		// create new block in hand
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			spawnObject (toSpawnWithR);
+			spawnObject (toSpawnWith1);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			spawnObject (toSpawnWithF);
+			spawnObject (toSpawnWith2);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			spawnObject (toSpawnWithV);
+			spawnObject (toSpawnWith3);
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			spawnObject (toSpawnWith4);
 		}
 		// pickup existing block
 		if (Input.GetKeyDown (KeyCode.E)) {

@@ -8,8 +8,8 @@ public class Walking_script : MonoBehaviour {
 	public int MaxSpeed = 50;
 	public Text BlockCount;
 
-	public Transform theParent;
-	public Transform theChild;
+	Transform theParent;
+	Transform theChild;
 	public float NewPos;
 
 	public float forwardVel = 6;
@@ -31,6 +31,8 @@ public class Walking_script : MonoBehaviour {
 	void Start () {
 		// FIXME this must not be red LOL
 		// GameManager.instance.currentScore = BlockCount;
+		theChild = GameObject.FindWithTag("Head").transform;
+		theParent = gameObject.transform;
 		targetRotation = transform.rotation;
 		rbody = GetComponent<Rigidbody>();
 	}

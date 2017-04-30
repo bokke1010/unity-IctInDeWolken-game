@@ -21,7 +21,7 @@ public class ConnectorScript : MonoBehaviour {
 	void Update () {
 		// findSource (); // now moved to the controller script for optimization
 		Connect (new Color (0, 1, 0));
-		if (blockFunction == "clock" && Time.fixedTime % 2 == 0 && source == null){
+		if (blockFunction == "clock" && Time.fixedTime % 0.5f == 0 && source == null){
 			activateNext(0);
 		}
 	}
@@ -61,10 +61,15 @@ public class ConnectorScript : MonoBehaviour {
 			case "code_block":
 				Debug.Log ("code activated");
 				activateNext (cycle);
-				moveBall (gameObject.transform.forward * 75);
+				moveBall (gameObject.transform.forward * 40);
 				break;
 			case "connector_block":
 				activateNext (cycle);
+				break;
+			case "condition_block":
+				if (Input.GetKey (KeyCode.Q)) {
+					activateNext (cycle);
+				}
 				break;
 		}
 	}
@@ -105,9 +110,11 @@ public class ConnectorScript : MonoBehaviour {
 			myLine.AddComponent<LineRenderer>();
 			LineRenderer lr = myLine.GetComponent<LineRenderer>();
 			lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
-			lr.SetColors(color, color);
-			lr.SetWidth(0.1f, 0.05f);
-			lr.SetVertexCount(vertexes+1);
+			lr.startColor = color;
+			lr.endColor = color;
+			lr.startWidth = 0.1f;
+			lr.endWidth = 0.05f;
+			lr.positionCount = vertexes+1;
 			lr.SetPosition (0, gameObject.transform.position);
 			nxtBlock = gameObject;
 			nxtBlockScript = nxtBlock.GetComponent<ConnectorScript> ();

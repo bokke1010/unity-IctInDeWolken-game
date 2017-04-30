@@ -1,7 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{F2F7FBE0-8578-8D5D-2530-125B46EDC262}") = "unity-IctInDeWolken-game", "Assembly-CSharp.csproj", "{373726B5-D9C5-9B45-DDC4-AAECB50AC725}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unity-IctInDeWolken-game", "Assembly-CSharp.csproj", "{373726B5-D9C5-9B45-DDC4-AAECB50AC725}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
