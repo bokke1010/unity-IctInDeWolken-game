@@ -78,8 +78,7 @@ public class ConnectorScript : MonoBehaviour {
 		Ball.GetComponent<Rigidbody> ().AddForce (movement);
 	}
 
-	void findSource(){
-		ConnectorScript[] objects = FindObjectsOfType<ConnectorScript> ();
+	public static void findSource(ConnectorScript[] objects){
 		for (int i = 0; i < objects.Length; i++) {
 			objects [i].attach ();
 			objects[i].source = null;
