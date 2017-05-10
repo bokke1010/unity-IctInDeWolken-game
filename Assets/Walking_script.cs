@@ -31,7 +31,7 @@ public class Walking_script : MonoBehaviour {
 	void Start () {
 		// FIXME this must not be red LOL
 		// GameManager.instance.currentScore = BlockCount;
-		theChild = GameObject.FindWithTag("MainCamera").transform;
+		theChild = GameObject.FindWithTag("Head").transform;
 		theParent = gameObject.transform;
 		targetRotation = transform.rotation;
 		rbody = GetComponent<Rigidbody>();
@@ -39,6 +39,8 @@ public class Walking_script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// TODO: add some working code
+
 		forwardInput = Input.GetAxis("Vertical");
 		sidewaysInput = Input.GetAxis ("Horizontal");
 		//turnInput = Input.GetAxis("Horizontal");

@@ -9,12 +9,14 @@ public class PickupObject : MonoBehaviour {
 	public float smooth;
 	public float rSmooth;
 	public float scrollSensitivity;
-	public GameObject[] objectToSpawn;
+	public GameObject toSpawnWith1;
+	public GameObject toSpawnWith2;
+	public GameObject toSpawnWith3;
+	public GameObject toSpawnWith4;
 	float yOffset;
-	public ConnectorScript[] objects;
 	// Use this for initialization
 	void Start () {
-		mainCamera = GameObject.FindWithTag("MainCamera");
+		mainCamera = GameObject.FindWithTag("Head");
 	}
 	
 	// Update is called once per frame
@@ -28,7 +30,7 @@ public class PickupObject : MonoBehaviour {
 	}
 	//TODO: line 33 works for now, but this dual-rotation bug must be fixed (parent y rotation + local y rotation) since local y rot should always be 0
 	void carry(GameObject o){
-		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + mainCamera.transform.forward * distance , Time.deltaTime * smooth);
+		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + transform.worldToLocalMatrix.MultiplyVector(mainCamera.transform.forward) * distance , Time.deltaTime * smooth);
 		o.transform.rotation = Quaternion.Lerp(o.transform.rotation, Quaternion.Euler( new Vector3(0,gameObject.transform.eulerAngles.y + yOffset,0)), Time.deltaTime * rSmooth);
 		yOffset += scrollSensitivity * Input.GetAxis("Mouse ScrollWheel");
 		//Debug.Log(gameObject.transform.eulerAngles.y);
@@ -40,22 +42,21 @@ public class PickupObject : MonoBehaviour {
 		carriedObject = Instantiate(objToSpawn, mainCamera.transform.position + mainCamera.transform.forward * distance, Quaternion.Euler(0,gameObject.transform.eulerAngles.y + 90,90)) as GameObject;
 		carriedObject.GetComponent<Rigidbody> ().isKinematic = true;
 		yOffset = 0f;
-		objects = FindObjectsOfType<ConnectorScript> ();
 	}
 
 	void pickup(){
 		// create new block in hand
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			spawnObject (objectToSpawn[0]);
+			spawnObject (toSpawnWith1);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			spawnObject (objectToSpawn[1]);
+			spawnObject (toSpawnWith2);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			spawnObject (objectToSpawn[2]);
+			spawnObject (toSpawnWith3);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha4)) {
-			spawnObject (objectToSpawn[3]);
+			spawnObject (toSpawnWith4);
 		}
 		// pickup existing block
 		if (Input.GetKeyDown (KeyCode.E)) {
