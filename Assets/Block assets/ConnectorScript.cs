@@ -90,7 +90,7 @@ public class ConnectorScript : MonoBehaviour {
 		}
 	}
 
-	void Connect(Color color, float duration = 0.02f)
+	void Connect(Color color)
 	{
 		int vertexes = 1;
 		if (source == null) {
@@ -123,7 +123,7 @@ public class ConnectorScript : MonoBehaviour {
 				lr.SetPosition(n, nxtBlock.transform.position);
 			}
 			lr.SetPosition(vertexes, nxtBlock.transform.forward * nxtBlockScript.connectRange + nxtBlock.transform.position );
-			GameObject.Destroy(myLine, duration);
+			GameObject.Destroy(myLine, 0.02f);
 		}
 	}
 }

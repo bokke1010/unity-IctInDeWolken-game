@@ -11,6 +11,7 @@ public class PickupObject : MonoBehaviour {
 	public float scrollSensitivity;
 	public GameObject[] objectToSpawn;
 	float yOffset;
+	float zOffset;
 	public ConnectorScript[] objects;
 	// Use this for initialization
 	void Start () {
@@ -29,8 +30,8 @@ public class PickupObject : MonoBehaviour {
 	//TODO: line 33 works for now, but this dual-rotation bug must be fixed (parent y rotation + local y rotation) since local y rot should always be 0
 	void carry(GameObject o){
 		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + mainCamera.transform.forward * distance , Time.deltaTime * smooth);
-		o.transform.rotation = Quaternion.Lerp(o.transform.rotation, Quaternion.Euler( new Vector3(0,gameObject.transform.eulerAngles.y + yOffset,0)), Time.deltaTime * rSmooth);
-		yOffset += scrollSensitivity * Input.GetAxis("Mouse ScrollWheel");
+		o.transform.rotation = Quaternion.Lerp(o.transform.rotation, Quaternion.Euler( new Vector3(zOffset,gameObject.transform.eulerAngles.y + yOffset,0)), Time.deltaTime * rSmooth);
+		zOffset += scrollSensitivity * Input.GetAxis("Mouse ScrollWheel");
 		//Debug.Log(gameObject.transform.eulerAngles.y);
 	} //o.transform.rotation.x, mainCamera.transform.forward.y, o.transform.rotation.z
 
@@ -40,6 +41,7 @@ public class PickupObject : MonoBehaviour {
 		carriedObject = Instantiate(objToSpawn, mainCamera.transform.position + mainCamera.transform.forward * distance, Quaternion.Euler(0,gameObject.transform.eulerAngles.y + 90,90)) as GameObject;
 		carriedObject.GetComponent<Rigidbody> ().isKinematic = true;
 		yOffset = 0f;
+		zOffset = 0f;
 		objects = FindObjectsOfType<ConnectorScript> ();
 	}
 
@@ -57,6 +59,12 @@ public class PickupObject : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha4)) {
 			spawnObject (objectToSpawn[3]);
 		}
+		if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			spawnObject (objectToSpawn[4]);
+		}
+		/* if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			spawnObject (objectToSpawn[5]);
+		} */
 		// pickup existing block
 		if (Input.GetKeyDown (KeyCode.E)) {
 			int x = Screen.width / 2;
@@ -71,6 +79,7 @@ public class PickupObject : MonoBehaviour {
 					carriedObject = p.gameObject;
 					p.gameObject.GetComponent<Rigidbody> ().isKinematic = true;
 					yOffset = 0f;
+					zOffset = 0f;
 				}
 			}
 		}
