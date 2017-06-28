@@ -1,24 +1,34 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PickupObject : MonoBehaviour {
+	
 	GameObject mainCamera;
+
 	bool carrying;
 	GameObject carriedObject;
 	public float distance = 3f;
 	public float smooth;
 	public float rSmooth;
 	public float scrollSensitivity;
+
 	public GameObject[] objectToSpawn;
+	static int SelectedCube = 0;
 	float yOffset;
 	float zOffset;
+
 	public ConnectorScript[] objects;
-	// Use this for initialization
+
+	[SerializeField]
+	private GameObject myTextgameObject;  // gameObject in Hierarchy
+	private Text Txt_SelectedCube;        // Our reference to text component
+
 	void Start () {
 		mainCamera = GameObject.FindWithTag("MainCamera");
+		Txt_SelectedCube = myTextgameObject.GetComponent<Text>();
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		if(carrying){
 			carry (carriedObject);
@@ -27,13 +37,16 @@ public class PickupObject : MonoBehaviour {
 			pickup();
 		}
 	}
-	//TODO: line 33 works for now, but this dual-rotation bug must be fixed (parent y rotation + local y rotation) since local y rot should always be 0
+
 	void carry(GameObject o){
 		o.transform.position = Vector3.Lerp(o.transform.position, mainCamera.transform.position + mainCamera.transform.forward * distance , Time.deltaTime * smooth);
 		o.transform.rotation = Quaternion.Lerp(o.transform.rotation, Quaternion.Euler( new Vector3(zOffset,gameObject.transform.eulerAngles.y + yOffset,0)), Time.deltaTime * rSmooth);
-		zOffset += scrollSensitivity * Input.GetAxis("Mouse ScrollWheel");
-		//Debug.Log(gameObject.transform.eulerAngles.y);
-	} //o.transform.rotation.x, mainCamera.transform.forward.y, o.transform.rotation.z
+		if (Input.GetKey (KeyCode.Tab)) {
+			zOffset += scrollSensitivity * Input.GetAxis ("Mouse ScrollWheel");
+		} else {
+			yOffset += scrollSensitivity * Input.GetAxis ("Mouse ScrollWheel");
+		}
+	}
 
 	void spawnObject(Object objToSpawn){
 		carrying = true;
@@ -47,24 +60,21 @@ public class PickupObject : MonoBehaviour {
 
 	void pickup(){
 		// create new block in hand
-		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			spawnObject (objectToSpawn[0]);
+		if (Input.GetKeyDown (KeyCode.LeftShift)) {
+			spawnObject (objectToSpawn[SelectedCube]);
+		} // avoid out-of-bounds
+		/*if (SelectedCube > objectToSpawn.Length - 1) {
+			SelectedCube = 0;
 		}
-		if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			spawnObject (objectToSpawn[1]);
-		}
-		if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			spawnObject (objectToSpawn[2]);
-		}
-		if (Input.GetKeyDown (KeyCode.Alpha4)) {
-			spawnObject (objectToSpawn[3]);
-		}
-		if (Input.GetKeyDown (KeyCode.Alpha5)) {
-			spawnObject (objectToSpawn[4]);
-		}
-		/* if (Input.GetKeyDown (KeyCode.Alpha6)) {
-			spawnObject (objectToSpawn[5]);
-		} */
+		if (SelectedCube < 0) {
+			SelectedCube = objectToSpawn.Length - 1;
+		}*/
+		// change selected block
+
+		SelectedCube += Mathf.RoundToInt( Input.GetAxis ("Mouse ScrollWheel") );
+		Debug.Log (Mathf.RoundToInt( Input.GetAxis ("Mouse ScrollWheel") ) );
+		//Txt_SelectedCube.text = SelectedCube.ToString();
+
 		// pickup existing block
 		if (Input.GetKeyDown (KeyCode.E)) {
 			int x = Screen.width / 2;
